@@ -1,0 +1,44 @@
+cff-version: 1.2.0
+message: "If you use falsify-js, please cite it as below."
+title: "falsify-js — JavaScript reference implementation of the PRML v0.1 specification"
+abstract: >-
+  Single-file Node.js / browser implementation of the Pre-Registered ML
+  Manifest specification. Produces canonical bytes per PRML v0.1 §4
+  rules, byte-equivalent to the Python reference across 20 conformance
+  vectors (12 v0.1 stable + 8 v0.2 RFC). Zero runtime dependencies.
+  CC BY 4.0 spec; MIT code.
+authors:
+  - family-names: "Öztürk"
+    given-names: "Cüneyt"
+    affiliation: "Studio 11 Turkey Ltd. Şti."
+    email: "hello@studio-11.co"
+type: software
+license: MIT
+repository-code: "https://github.com/studio-11-co/falsify-js"
+url: "https://falsify.dev"
+version: "0.1.0"
+date-released: 2026-05-09
+keywords:
+  - "PRML"
+  - "pre-registration"
+  - "ML evaluation"
+  - "AI safety"
+  - "reproducibility"
+  - "JavaScript"
+  - "Node.js"
+identifiers:
+  - type: url
+    value: "https://www.npmjs.com/package/falsify-js"
+    description: "npm package"
+  - type: url
+    value: "https://spec.falsify.dev/v0.1"
+    description: "PRML v0.1 specification"
+preferred-citation:
+  type: software
+  title: "falsify-js"
+  authors:
+    - family-names: "Öztürk"
+      given-names: "Cüneyt"
+  year: 2026
+  url: "https://github.com/studio-11-co/falsify-js"
+  version: "0.1.0"

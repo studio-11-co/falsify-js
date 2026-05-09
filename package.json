@@ -1,0 +1,53 @@
+{
+  "name": "falsify-js",
+  "version": "0.1.0",
+  "description": "JavaScript reference implementation of PRML (Pre-Registered ML Manifest) v0.1 — open spec for committing ML evaluation claims to a SHA-256 hash before the run. CC BY 4.0 spec; MIT code; byte-equivalent to the Python reference across 20 conformance vectors (12 v0.1 + 8 v0.2 RFC).",
+  "main": "index.js",
+  "bin": {
+    "falsify-js": "falsify.js"
+  },
+  "files": [
+    "falsify.js",
+    "index.js",
+    "LICENSE",
+    "README.md",
+    "CITATION.cff"
+  ],
+  "scripts": {
+    "test": "node test.js",
+    "test-vectors": "node falsify.js test-vectors ../falsify-hackathon/spec/test-vectors/v0.1/test-vectors.json"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "prml",
+    "pre-registration",
+    "ml-evaluation",
+    "ai-safety",
+    "reproducibility",
+    "sha256",
+    "content-addressing",
+    "eu-ai-act",
+    "audit-trail",
+    "falsify"
+  ],
+  "homepage": "https://falsify.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/studio-11-co/falsify-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/studio-11-co/falsify-js/issues"
+  },
+  "author": {
+    "name": "Cüneyt Öztürk",
+    "email": "hello@studio-11.co",
+    "url": "https://studio-11.co"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

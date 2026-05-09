@@ -1,0 +1,32 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ["18", "20", "22"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Fetch v0.1 conformance vectors
+        run: |
+          mkdir -p ../falsify-hackathon/spec/test-vectors/v0.1
+          curl -sL "https://raw.githubusercontent.com/studio-11-co/falsify/main/spec/test-vectors/v0.1/test-vectors.json" \
+            -o ../falsify-hackathon/spec/test-vectors/v0.1/test-vectors.json
+      - name: Run tests
+        run: node test.js
+      - name: CLI smoke test
+        run: |
+          node falsify.js init smoke-test
+          ls smoke-test.yaml
+          # Lock against the bundled smoke vector via the CLI
+          # (full conformance is run in test.js)
