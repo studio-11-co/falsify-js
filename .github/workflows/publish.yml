@@ -57,10 +57,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-          # NOTE: do NOT set registry-url here — that injects a placeholder
-          # NODE_AUTH_TOKEN that breaks OIDC. publishConfig.registry in
-          # package.json drives the publish target.
-      - name: Upgrade npm to a version with Trusted Publishing OIDC support
+          registry-url: "https://registry.npmjs.org"
+      - name: Upgrade npm to ≥ 11.5 for Trusted Publishing OIDC support
         run: sudo npm install -g npm@latest
       - name: Verify version matches tag
         run: |
@@ -70,5 +68,5 @@ jobs:
             echo "package.json version ($PKG_VERSION) does not match tag ($TAG_VERSION)"
             exit 1
           fi
-      - name: Publish to npm (Trusted Publishing — OIDC, no token)
+      - name: Publish to npm (Trusted Publishing — OIDC)
         run: npm publish --provenance --access public
