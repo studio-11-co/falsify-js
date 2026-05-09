@@ -66,7 +66,5 @@ jobs:
             echo "package.json version ($PKG_VERSION) does not match tag ($TAG_VERSION)"
             exit 1
           fi
-      - name: Publish to npm
+      - name: Publish to npm (Trusted Publishing — OIDC, no token)
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
