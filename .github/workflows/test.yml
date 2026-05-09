@@ -27,6 +27,5 @@ jobs:
       - name: CLI smoke test
         run: |
           node falsify.js init smoke-test
-          ls smoke-test.yaml
-          # Lock against the bundled smoke vector via the CLI
-          # (full conformance is run in test.js)
+          test -f .falsify/smoke-test/spec.yaml || (echo "init didn't create the spec file"; exit 1)
+          # full conformance is run in test.js
