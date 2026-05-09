@@ -61,7 +61,7 @@ jobs:
           # NODE_AUTH_TOKEN that breaks OIDC. publishConfig.registry in
           # package.json drives the publish target.
       - name: Upgrade npm to a version with Trusted Publishing OIDC support
-        run: npm install -g npm@latest
+        run: sudo npm install -g npm@latest
       - name: Verify version matches tag
         run: |
           PKG_VERSION=$(node -p "require('./package.json').version")
