@@ -3,6 +3,7 @@
 > JavaScript reference implementation of the [PRML (Pre-Registered ML Manifest) v0.1](https://spec.falsify.dev/v0.1) specification.
 
 [![npm](https://img.shields.io/npm/v/falsify-js.svg)](https://www.npmjs.com/package/falsify-js)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20177839.svg)](https://doi.org/10.5281/zenodo.20177839)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRML v0.1](https://img.shields.io/badge/PRML-v0.1-39D98A.svg)](https://spec.falsify.dev/v0.1)
 
@@ -132,3 +133,5 @@ Contact: hello@studio-11.co · [falsify.dev](https://falsify.dev)
 ## Contributing
 
 See [`CONTRIBUTING.md`](./CONTRIBUTING.md) and the [`good first issue`](https://github.com/studio-11-co/falsify-js/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) label for scoped work.
+
+**Cite the spec:** Öztürk, C. (2026). *PRML v0.1*. Zenodo. [https://doi.org/10.5281/zenodo.20177839](https://doi.org/10.5281/zenodo.20177839)
