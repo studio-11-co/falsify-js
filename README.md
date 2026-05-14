@@ -90,8 +90,8 @@ This package is one of four reference implementations. Each produces identical S
 
 - Python: [`pip install falsify`](https://pypi.org/project/falsify/) ([source](https://github.com/studio-11-co/falsify))
 - JavaScript: this package
-- Go: [`github.com/studio-11-co/falsify-go`](https://github.com/studio-11-co/falsify-go)
-- Rust: [`falsify-rs` crate](https://crates.io/crates/falsify-rs)
+- Go: [source under `studio-11-co/falsify/impl/go`](https://github.com/studio-11-co/falsify/tree/main/impl/go)
+- Rust: [source under `studio-11-co/falsify/impl/rust`](https://github.com/studio-11-co/falsify/tree/main/impl/rust)
 
 Cross-implementation parity is mechanically verified on every commit via the [multi-language conformance workflow](https://github.com/studio-11-co/falsify/blob/main/.github/workflows/multi-lang-conformance.yml).
 
@@ -120,3 +120,15 @@ Cross-implementation parity is mechanically verified on every commit via the [mu
 
 Cüneyt Öztürk, co-founder, Studio 11 Turkey Ltd. Şti.
 Contact: hello@studio-11.co · [falsify.dev](https://falsify.dev)
+
+
+---
+
+## Status
+
+- v0.1 stable. v0.2 RFC open through 2026-05-22 — [spec.falsify.dev/v0.2-rfc](https://spec.falsify.dev/v0.2-rfc).
+- The PRML JSON Schema is in the [SchemaStore catalog](https://www.schemastore.org/json/) (merged 2026-05-11), so `*.prml.yaml` files autocomplete in VS Code, JetBrains, Helix, Zed, and Cursor out of the box.
+
+## Contributing
+
+See [`CONTRIBUTING.md`](./CONTRIBUTING.md) and the [`good first issue`](https://github.com/studio-11-co/falsify-js/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) label for scoped work.
