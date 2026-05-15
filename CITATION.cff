@@ -16,7 +16,7 @@ type: software
 license: MIT
 repository-code: "https://github.com/studio-11-co/falsify-js"
 url: "https://falsify.dev"
-version: "0.1.1"
+version: "0.1.2"
 date-released: 2026-05-09
 keywords:
   - "PRML"
@@ -41,4 +41,4 @@ preferred-citation:
       given-names: "Cüneyt"
   year: 2026
   url: "https://github.com/studio-11-co/falsify-js"
-  version: "0.1.1"
+  version: "0.1.2"
