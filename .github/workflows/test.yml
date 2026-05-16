@@ -20,7 +20,7 @@ jobs:
       - name: Fetch v0.1 conformance vectors
         run: |
           mkdir -p ../falsify-hackathon/spec/test-vectors/v0.1
-          curl -sL "https://raw.githubusercontent.com/studio-11-co/falsify/main/spec/test-vectors/v0.1/test-vectors.json" \
+          curl -sL "https://raw.githubusercontent.com/studio-11-co/falsify/f6a784fffde27c44743dcd791d97f27f627c909c/spec/test-vectors/v0.1/test-vectors.json" \
             -o ../falsify-hackathon/spec/test-vectors/v0.1/test-vectors.json
       - name: Run tests
         run: node test.js
