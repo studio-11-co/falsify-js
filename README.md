@@ -102,6 +102,15 @@ Cross-implementation parity is mechanically verified on every commit via the [mu
 - **Does not solve selective publication.** PRML §8.1 names this limit explicitly. A publisher can pre-register many claims and publish only the favourable ones.
 - **Does not specify which execution attestations are valid.** The v0.2 RFC adds an optional `runner_attestation` URI field; PRML records that an attestation was emitted, not what it contains.
 
+
+## Audit & compliance crosswalks
+
+Subcategory-by-subcategory maps from major AI governance frameworks to PRML fields (FULL / PARTIAL / NONE tagged):
+
+- [EU AI Act Article 12](https://spec.falsify.dev/eu-ai-act/article-12/) — code-level pattern for the 2 August 2026 high-risk deadline
+- [NIST AI RMF 1.0](https://spec.falsify.dev/nist-ai-rmf/) — GOVERN / MAP / MEASURE / MANAGE subcategory map
+- [ISO/IEC 42001:2023](https://spec.falsify.dev/iso-42001/) — AI Management System clause-by-clause evidence map
+
 ## Spec & licensing
 
 - Spec: [spec.falsify.dev/v0.1](https://spec.falsify.dev/v0.1) (CC BY 4.0)
