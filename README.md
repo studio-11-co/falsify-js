@@ -3,7 +3,7 @@
 > JavaScript reference implementation of the [PRML (Pre-Registered ML Manifest) v0.1](https://spec.falsify.dev/v0.1) specification.
 
 [![npm](https://img.shields.io/npm/v/falsify-js.svg)](https://www.npmjs.com/package/falsify-js)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20177839.svg)](https://doi.org/10.5281/zenodo.20177839)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20177839-blue.svg)](https://doi.org/10.5281/zenodo.20177839)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRML v0.1](https://img.shields.io/badge/PRML-v0.1-39D98A.svg)](https://spec.falsify.dev/v0.1)
 
