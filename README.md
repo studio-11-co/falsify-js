@@ -41,7 +41,7 @@ const manifest = {
     hash: 'sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
   },
   seed: 42,
-  producer: { id: 'studio-11.co' },
+  producer: { id: 'falsify.dev' },
 };
 
 // Validate structure
