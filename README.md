@@ -128,8 +128,8 @@ Subcategory-by-subcategory maps from major AI governance frameworks to PRML fiel
 
 ## Authors
 
-Cüneyt Öztürk, co-founder, Studio 11 Turkey Ltd. Şti.
-Contact: hello@studio-11.co · [falsify.dev](https://falsify.dev)
+Cüneyt Öztürk
+Contact: hello@falsify.dev · [falsify.dev](https://falsify.dev)
 
 
 ---
