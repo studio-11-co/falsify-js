@@ -270,6 +270,22 @@ function cmdInit(name) {
   return EXIT_PASS;
 }
 
+// Reject prototype-polluting keys anywhere in a parsed manifest. Returns the
+// object unchanged if clean; throws otherwise. Bounded depth as a DoS guard.
+function assertNoProtoKeys(o, depth) {
+  depth = depth || 0;
+  if (depth > 100) throw new Error('manifest nesting too deep');
+  if (o && typeof o === 'object') {
+    for (const k of Object.keys(o)) {
+      if (k === '__proto__' || k === 'constructor' || k === 'prototype') {
+        throw new Error('manifest contains a disallowed key: ' + k);
+      }
+      assertNoProtoKeys(o[k], depth + 1);
+    }
+  }
+  return o;
+}
+
 function loadManifest(filePath) {
   // Minimal YAML loader for our canonical format only.
   // We intentionally do NOT use a generic YAML parser: round-tripping
@@ -278,15 +294,19 @@ function loadManifest(filePath) {
   // For now we require JSON input to this tool; YAML support requires js-yaml.
   if (filePath.endsWith('.json')) {
     const raw = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(raw);
+    return assertNoProtoKeys(JSON.parse(raw));
   }
-  // Otherwise try js-yaml if available
+  // Otherwise use js-yaml if available (optional dependency).
+  let yaml;
   try {
-    const yaml = require('js-yaml');
-    return yaml.load(fs.readFileSync(filePath, 'utf-8'));
+    yaml = require('js-yaml');
   } catch (e) {
     throw new Error('YAML loading requires js-yaml: npm install js-yaml. Or pass a .json file.');
   }
+  // CORE_SCHEMA: no custom/JS type tags (e.g. !!js/function) can be
+  // instantiated from untrusted manifest content.
+  const parsed = yaml.load(fs.readFileSync(filePath, 'utf-8'), { schema: yaml.CORE_SCHEMA });
+  return assertNoProtoKeys(parsed);
 }
 
 function cmdLock(filePath) {
