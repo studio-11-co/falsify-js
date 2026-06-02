@@ -4,8 +4,8 @@ title: "falsify-js — JavaScript reference implementation of the PRML v0.1 spec
 abstract: >-
   Single-file Node.js / browser implementation of the Pre-Registered ML
   Manifest specification. Produces canonical bytes per PRML v0.1 §4
-  rules, byte-equivalent to the Python reference across 20 conformance
-  vectors (12 v0.1 stable + 8 v0.2 RFC). Zero runtime dependencies.
+  rules, byte-equivalent to the Python reference across 21 conformance
+  vectors (13 v0.1 stable + 8 v0.2 RFC). Zero runtime dependencies.
   CC BY 4.0 spec; MIT code.
 authors:
   - family-names: "Öztürk"

@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRML v0.1](https://img.shields.io/badge/PRML-v0.1-39D98A.svg)](https://spec.falsify.dev/v0.1)
 
-PRML is an open CC BY 4.0 specification for committing ML evaluation claims to a SHA-256 hash before the experiment runs. `falsify-js` produces canonical bytes per the spec's §4 rules, byte-equivalent to the Python reference across **20 conformance vectors** (12 v0.1 stable + 8 v0.2 RFC).
+PRML is an open CC BY 4.0 specification for committing ML evaluation claims to a SHA-256 hash before the experiment runs. `falsify-js` produces canonical bytes per the spec's §4 rules, byte-equivalent to the Python reference across **21 conformance vectors** (13 v0.1 stable + 8 v0.2 RFC).
 
 Zero runtime dependencies. Single file, ~440 LOC. Works in Node ≥ 18 and any browser via Web Crypto.
 

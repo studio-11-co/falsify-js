@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Node.js native test runner — no external dependencies. Tests the JS
 // reference impl against the full conformance suite locked in the spec
-// repo: 12 v0.1 normative vectors + 8 v0.2 candidate vectors = 20 total.
+// repo: 13 v0.1 normative vectors + 8 v0.2 candidate vectors = 21 total.
 // Run via `npm test`.
 
 'use strict';
@@ -110,7 +110,7 @@ test('validateManifest accepts canonical v0.1 manifests (returns empty error arr
   }
 });
 
-test(`all ${VECTORS.length} conformance vectors hash byte-equivalently (12 v0.1 + 8 v0.2)`, () => {
+test(`all ${VECTORS.length} conformance vectors hash byte-equivalently (13 v0.1 + 8 v0.2)`, () => {
   let passed = 0;
   for (const v of VECTORS) {
     if (HASH_SKIP.has(v.id)) continue;
