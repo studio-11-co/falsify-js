@@ -17,21 +17,15 @@ name: Publish to npm
 #   4. Subsequent releases: `git tag v0.1.1 && git push origin v0.1.1` →
 #      this workflow publishes via OIDC, no token needed.
 
-# NOTE: Disabled while Trusted Publishing OIDC is being debugged.
-# Multiple v0.1.1–v0.1.6 attempts hit ENEEDAUTH or 404 even with:
-#   - permissions: id-token: write
-#   - environment: npm (matches npm-side Trusted Publisher)
-#   - npm@latest installed in-runner
-#   - --provenance flag
-# Sigstore provenance signing succeeds (proves OIDC works for signing),
-# but the registry PUT fails. Probable cause: undocumented mismatch
-# between OIDC token claims and npm's expected publisher signature.
-#
-# For now, future versions are published manually with the same flow as
-# 0.1.0: granular token (bypass 2FA) + recovery code as OTP. Once npm
-# Trusted Publishing is debugged, change `workflow_dispatch:` below back
-# to a `push: tags:` trigger.
+# Re-enabled 2026-06-02 for tag-triggered OIDC publish. Earlier ENEEDAUTH
+# failures traced to the npm-side Trusted Publisher config not matching the
+# workflow (owner studio-11-co / repo falsify-js / workflow publish.yml /
+# environment npm). With that configured, a `v*.*.*` tag publishes tokenless.
+# workflow_dispatch kept for manual re-runs.
 on:
+  push:
+    tags:
+      - 'v*.*.*'
   workflow_dispatch:
 
 permissions:
