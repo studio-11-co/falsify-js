@@ -2,7 +2,7 @@
 // falsify-js — second reference implementation of PRML v0.1
 //
 // Single file, ~400 LOC, zero runtime dependencies beyond Node.js stdlib.
-// Reproduces all 12 PRML v0.1 conformance vectors byte-for-byte.
+// Reproduces all 13 PRML v0.1 conformance vectors byte-for-byte.
 //
 // Spec:    https://spec.falsify.dev/v0.1
 // Vectors: https://github.com/studio-11-co/falsify/tree/main/spec/test-vectors
@@ -195,6 +195,31 @@ const REQUIRED_DATASET = ['id', 'hash'];
 const REQUIRED_PRODUCER = ['id'];
 const VALID_COMPARATORS = new Set(['>=', '<=', '>', '<', '==']);
 
+// Control / non-portable chars forbidden in any PRML string field (key or value):
+// C0 (U+0000–U+001F), DEL + C1 (U+007F–U+009F), line/paragraph separators
+// (U+2028/U+2029), and BOM (U+FEFF). They canonicalize inconsistently across YAML
+// engines, so a manifest carrying them is non-portable. Mirrors the Python
+// reference (_FORBIDDEN_CHARS in falsify_prml.py). Additive — no conformance
+// vector contains them, so no valid manifest's hash changes.
+const FORBIDDEN_CHARS = /[\u0000-\u001f\u007f-\u009f\u2028\u2029\ufeff]/;
+
+function badCharFields(obj, path = '') {
+  const out = [];
+  if (typeof obj === 'string') {
+    if (FORBIDDEN_CHARS.test(obj)) out.push(path || '(value)');
+  } else if (Array.isArray(obj)) {
+    obj.forEach((v, i) => out.push(...badCharFields(v, `${path}[${i}]`)));
+  } else if (obj && typeof obj === 'object') {
+    for (const [k, v] of Object.entries(obj)) {
+      const child = path ? `${path}.${k}` : k;
+      // A forbidden char in a KEY canonicalizes non-portably just as in a value.
+      if (FORBIDDEN_CHARS.test(k)) out.push(`${child} (key)`);
+      out.push(...badCharFields(v, child));
+    }
+  }
+  return out;
+}
+
 function validateManifest(m) {
   const errors = [];
   for (const f of REQUIRED_FIELDS) {
@@ -222,6 +247,10 @@ function validateManifest(m) {
       if (!(f in m.producer)) errors.push(`missing required field: producer.${f}`);
     }
   }
+  for (const fld of badCharFields(m)) {
+    errors.push(`${fld}: contains a control / non-portable character `
+      + `(C0/C1, U+007F, U+2028/U+2029, or U+FEFF) — not allowed in a PRML string field`);
+  }
   return errors;
 }
 
@@ -230,9 +259,10 @@ function validateManifest(m) {
 // ─────────────────────────────────────────────────────────────────────────
 
 const EXIT_PASS = 0;
+const EXIT_BAD = 2;       // bad input / spec: unreadable, unparseable, invalid manifest, bad --observed
 const EXIT_TAMPERED = 3;
 const EXIT_FAIL = 10;
-const EXIT_GUARD = 11;
+const EXIT_GUARD = 11;    // environmental guard: missing sidecar / missing lib
 
 function evaluatePredicate(observed, comparator, threshold) {
   switch (comparator) {
@@ -315,7 +345,7 @@ function cmdLock(filePath) {
   if (errors.length) {
     console.error('lock: invalid manifest:');
     errors.forEach(e => console.error('  - ' + e));
-    return EXIT_GUARD;
+    return EXIT_BAD;
   }
   const canonical = canonicalize(m);
   const hash = crypto.createHash('sha256').update(canonical, 'utf-8').digest('hex');
@@ -334,7 +364,7 @@ function cmdVerify(filePath, observedStr) {
   if (errors.length) {
     console.error('verify: invalid manifest:');
     errors.forEach(e => console.error('  - ' + e));
-    return EXIT_GUARD;
+    return EXIT_BAD;
   }
   const canonical = canonicalize(m);
   const computed = crypto.createHash('sha256').update(canonical, 'utf-8').digest('hex');
@@ -358,7 +388,7 @@ function cmdVerify(filePath, observedStr) {
   const observed = parseFloat(observedStr);
   if (!Number.isFinite(observed)) {
     console.error('verify: --observed must be a finite number');
-    return EXIT_GUARD;
+    return EXIT_BAD;
   }
   const ok = evaluatePredicate(observed, m.comparator, m.threshold);
   if (ok) {
@@ -421,7 +451,7 @@ Commands:
   test-vectors <vectors.json>            run conformance suite
   hash <spec.json>                       print canonical SHA-256 only
 
-Exit codes: 0=PASS, 3=TAMPERED, 10=FAIL, 11=GUARD
+Exit codes: 0=PASS, 2=BAD (bad input/spec), 3=TAMPERED, 10=FAIL, 11=GUARD (missing sidecar/lib)
 Spec:    https://spec.falsify.dev/v0.1
 `);
   return EXIT_GUARD;
@@ -437,19 +467,26 @@ function main(argv) {
   const args = argv.slice(2);
   if (args.length === 0) return usage();
   const cmd = args[0];
-  switch (cmd) {
-    case 'init':         return cmdInit(args[1] || 'default');
-    case 'lock':         return cmdLock(args[1]);
-    case 'verify': {
-      const idx = args.indexOf('--observed');
-      const observed = idx >= 0 ? args[idx + 1] : undefined;
-      return cmdVerify(args[1], observed);
+  try {
+    switch (cmd) {
+      case 'init':         return cmdInit(args[1] || 'default');
+      case 'lock':         return cmdLock(args[1]);
+      case 'verify': {
+        const idx = args.indexOf('--observed');
+        const observed = idx >= 0 ? args[idx + 1] : undefined;
+        return cmdVerify(args[1], observed);
+      }
+      case 'test-vectors': return cmdTestVectors(args[1]);
+      case 'hash':         return cmdHash(args[1]);
+      case '-h':
+      case '--help':       return usage() === EXIT_GUARD ? EXIT_PASS : EXIT_PASS;
+      default:             return usage();
     }
-    case 'test-vectors': return cmdTestVectors(args[1]);
-    case 'hash':         return cmdHash(args[1]);
-    case '-h':
-    case '--help':       return usage() === EXIT_GUARD ? EXIT_PASS : EXIT_PASS;
-    default:             return usage();
+  } catch (e) {
+    // Unreadable file, malformed JSON/YAML — bad input (EXIT_BAD=2), matching
+    // the Python reference, not an environmental guard.
+    console.error(`${cmd}: ${e.message}`);
+    return EXIT_BAD;
   }
 }
 
@@ -464,5 +501,5 @@ module.exports = {
   validateManifest,
   evaluatePredicate,
   needsQuoting,
-  EXIT_PASS, EXIT_TAMPERED, EXIT_FAIL, EXIT_GUARD,
+  EXIT_PASS, EXIT_BAD, EXIT_TAMPERED, EXIT_FAIL, EXIT_GUARD,
 };

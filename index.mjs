@@ -10,6 +10,7 @@ export const validateManifest = pkg.validateManifest;
 export const evaluatePredicate = pkg.evaluatePredicate;
 export const needsQuoting = pkg.needsQuoting;
 export const EXIT_PASS = pkg.EXIT_PASS;
+export const EXIT_BAD = pkg.EXIT_BAD;
 export const EXIT_TAMPERED = pkg.EXIT_TAMPERED;
 export const EXIT_FAIL = pkg.EXIT_FAIL;
 export const EXIT_GUARD = pkg.EXIT_GUARD;

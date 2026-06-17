@@ -1,7 +1,7 @@
 {
   "name": "falsify-js",
-  "version": "0.1.5",
-  "description": "JavaScript reference implementation of PRML (Pre-Registered ML Manifest) v0.1 \u2014 open spec for committing ML evaluation claims to a SHA-256 hash before the run. CC BY 4.0 spec; MIT code; byte-equivalent to the Python reference across 21 conformance vectors (13 v0.1 + 8 v0.2 RFC).",
+  "version": "0.1.6",
+  "description": "JavaScript reference implementation of PRML (Pre-Registered ML Manifest) v0.1 — open spec for committing ML evaluation claims to a SHA-256 hash before the run. CC BY 4.0 spec; MIT code; byte-equivalent to the Python reference across 21 conformance vectors (13 v0.1 + 8 v0.2 RFC).",
   "main": "index.js",
   "module": "./index.mjs",
   "exports": {
@@ -51,7 +51,7 @@
     "url": "https://github.com/studio-11-co/falsify-js/issues"
   },
   "author": {
-    "name": "C\u00fcneyt \u00d6zt\u00fcrk",
+    "name": "Cüneyt Öztürk",
     "email": "hello@falsify.dev",
     "url": "https://falsify.dev"
   },
