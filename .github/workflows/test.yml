@@ -6,6 +6,14 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  # Pinned commit of studio-11-co/falsify (spec + reference impls). All vector
+  # fetches and the drift-diff below resolve against this exact commit, so a
+  # spec-repo change can never silently alter what this CI tests. Bump it
+  # deliberately.
+  #
+  SPEC_COMMIT: 3c3ac518c95f92e2bf46915b633b6bc2831f132d
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -17,15 +25,49 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-      - name: Fetch v0.1 conformance vectors
+
+      - name: Fetch conformance suites (v0.1 + v0.2) and reject suite at pinned commit
         run: |
-          mkdir -p ../falsify-hackathon/spec/test-vectors/v0.1
-          curl -sL "https://raw.githubusercontent.com/studio-11-co/falsify/f6a784fffde27c44743dcd791d97f27f627c909c/spec/test-vectors/v0.1/test-vectors.json" \
-            -o ../falsify-hackathon/spec/test-vectors/v0.1/test-vectors.json
-      - name: Run tests
+          BASE="https://raw.githubusercontent.com/studio-11-co/falsify/${SPEC_COMMIT}/spec/test-vectors"
+          mkdir -p vectors/v0.1 vectors/v0.2 vectors/reject
+          curl -fsSL "$BASE/v0.1/test-vectors.json"     -o vectors/v0.1/test-vectors.json
+          curl -fsSL "$BASE/v0.2/test-vectors.json"     -o vectors/v0.2/test-vectors.json
+          curl -fsSL "$BASE/reject/reject-vectors.json" -o vectors/reject/reject-vectors.json
+          curl -fsSL "$BASE/reject/check_reject.py"     -o vectors/reject/check_reject.py
+
+      - name: Run tests (both suites; test.js asserts 13 + 8 vector counts)
         run: node test.js
+        env:
+          PRML_VECTORS_DIR: ${{ github.workspace }}/vectors
+
+      - name: Reject suite (14 vectors MUST be rejected)
+        run: python3 vectors/reject/check_reject.py -- node falsify.js lock
+
       - name: CLI smoke test
         run: |
           node falsify.js init smoke-test
           test -f .falsify/smoke-test/spec.yaml || (echo "init didn't create the spec file"; exit 1)
-          # full conformance is run in test.js
+
+  drift-diff:
+    # falsify.js is published from this repo but its source of truth for
+    # conformance is impl/js/falsify.js in the spec repo. The two must not
+    # drift: this step fails on ANY byte difference. If a release ever needs
+    # a legitimate header-only difference (e.g. a version string line), switch
+    # to `diff -I '<exact pattern>'` for that line and document why here.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Clone studio-11-co/falsify at pinned commit
+        run: |
+          git clone https://github.com/studio-11-co/falsify spec-repo
+          git -C spec-repo checkout --detach "$SPEC_COMMIT"
+
+      - name: Drift-diff falsify.js vs impl/js/falsify.js
+        run: |
+          if diff falsify.js spec-repo/impl/js/falsify.js; then
+            echo "OK: falsify.js is byte-identical to impl/js/falsify.js @ ${SPEC_COMMIT}"
+          else
+            echo "::error::falsify.js has drifted from impl/js/falsify.js @ ${SPEC_COMMIT}. Reconcile (the two are vector-gated and must stay in sync), or bump SPEC_COMMIT if the spec repo is ahead."
+            exit 1
+          fi

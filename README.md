@@ -9,7 +9,7 @@
 
 PRML is an open CC BY 4.0 specification for committing ML evaluation claims to a SHA-256 hash before the experiment runs. `falsify-js` produces canonical bytes per the spec's §4 rules, byte-equivalent to the Python reference across **21 conformance vectors** (13 v0.1 stable + 8 v0.2 RFC).
 
-Zero runtime dependencies. Single file, ~440 LOC. Works in Node ≥ 18 and any browser via Web Crypto.
+Zero runtime dependencies. Single file, ~440 LOC. Runs on Node.js >= 18, as a CLI and as a library. Browser use is not packaged: the code relies on Node's `fs` and `crypto` modules, and the [registry](https://registry.falsify.dev) serves its own browser verifier.
 
 ## Install
 
@@ -73,8 +73,10 @@ falsify-js test-vectors <vectors.json>    # run conformance suite
 Exit codes match the Python reference:
 
 - `0` — pass
+- `2` — bad input (unreadable, unparseable, or invalid manifest)
 - `3` — tampered (hash mismatch)
 - `10` — fail (verdict false)
+- `11` — guard (missing sidecar)
 
 ## Public API
 

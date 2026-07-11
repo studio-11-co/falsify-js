@@ -10,10 +10,9 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 const { canonicalize, manifestHash, evaluatePredicate, validateManifest } = require('./falsify.js');
 
-// Locate the v0.1 test vectors. Prefer the sibling falsify-hackathon checkout;
-// fall back to the upstream raw URL if the sibling isn't present (CI fetches it).
 // JSON parser that preserves precision for large integers via BigInt
 // (mirrors the CLI's `test-vectors` subcommand). JS Number loses precision
 // above 2^53; PRML's seed field allows uint64.
@@ -33,35 +32,67 @@ function parseWithBigInt(raw) {
   return unwrap(obj);
 }
 
+// Conformance vectors: 13 v0.1 normative + 8 v0.2 candidate. Sources, tried
+// in order; the first that yields BOTH suites wins:
+//   1. $PRML_VECTORS_DIR — a directory containing v0.1/test-vectors.json and
+//      v0.2/test-vectors.json (CI sets this after fetching from the spec repo).
+//   2. The sibling falsify-hackathon checkout (local development layout).
+//   3. raw.githubusercontent.com at SPEC_COMMIT via curl (network fallback,
+//      same source CI fetches from).
+// If no source yields both suites, or a suite has the wrong vector count,
+// exit 1. A partial or shrunken suite must fail loudly, never pass silently.
+const SPEC_COMMIT = '095f71db08c62d49e9a6c12fa6f69e466066acc4';
+const V01_COUNT = 13;
+const V02_COUNT = 8;
+
+function readSuite(dir, sub) {
+  const p = path.join(dir, sub, 'test-vectors.json');
+  if (!fs.existsSync(p)) return null;
+  return parseWithBigInt(fs.readFileSync(p, 'utf-8'));
+}
+
+function fetchSuite(sub) {
+  const url = 'https://raw.githubusercontent.com/studio-11-co/falsify/'
+    + SPEC_COMMIT + '/spec/test-vectors/' + sub + '/test-vectors.json';
+  try {
+    const raw = execFileSync('curl', ['-fsSL', url],
+      { encoding: 'utf-8', maxBuffer: 16 * 1024 * 1024 });
+    return parseWithBigInt(raw);
+  } catch (e) {
+    return null;
+  }
+}
+
 function loadVectors() {
-  const specRoot = path.resolve(
-    __dirname, '..', 'falsify-hackathon', 'spec', 'test-vectors'
-  );
-  const v01 = path.join(specRoot, 'v0.1', 'test-vectors.json');
-  const v02 = path.join(specRoot, 'v0.2', 'test-vectors.json');
-  const out = [];
-  if (fs.existsSync(v01)) out.push(...parseWithBigInt(fs.readFileSync(v01, 'utf-8')));
-  if (fs.existsSync(v02)) out.push(...parseWithBigInt(fs.readFileSync(v02, 'utf-8')));
-  if (out.length > 0) return out;
-  // Bundled fallback: a single vector to give CI signal even without sibling repo
-  return [
-    {
-      id: 'TV-SMOKE',
-      title: 'Smoke vector — minimal valid manifest',
-      input: {
-        version: 'prml/0.1',
-        claim_id: '01900000-0000-7000-8000-000000000000',
-        created_at: '2026-05-01T12:00:00Z',
-        metric: 'accuracy',
-        comparator: '>=',
-        threshold: 0.85,
-        dataset: { id: 'imagenet-val-2012', hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' },
-        seed: 42,
-        producer: { id: 'studio-11.co' },
-      },
-      hash: '1a3466cc08ee7fb60a726ea1c4db6ecf48a9f847b9b7523bfb54b2ffaefee546',
-    },
-  ];
+  const candidates = [];
+  if (process.env.PRML_VECTORS_DIR) candidates.push(process.env.PRML_VECTORS_DIR);
+  candidates.push(path.resolve(__dirname, '..', 'falsify-hackathon', 'spec', 'test-vectors'));
+
+  let v01 = null, v02 = null, source = null;
+  for (const dir of candidates) {
+    const a = readSuite(dir, 'v0.1');
+    const b = readSuite(dir, 'v0.2');
+    if (a && b) { v01 = a; v02 = b; source = dir; break; }
+  }
+  if (!v01 || !v02) {
+    v01 = fetchSuite('v0.1');
+    v02 = fetchSuite('v0.2');
+    source = 'raw.githubusercontent.com @ ' + SPEC_COMMIT.slice(0, 12);
+  }
+  if (!v01 || !v02) {
+    console.error('FATAL: could not load the conformance vectors.');
+    console.error('Tried: $PRML_VECTORS_DIR, the sibling falsify-hackathon checkout,');
+    console.error('and raw.githubusercontent.com @ ' + SPEC_COMMIT.slice(0, 12) + ' (curl).');
+    process.exit(1);
+  }
+  if (v01.length !== V01_COUNT || v02.length !== V02_COUNT) {
+    console.error('FATAL: unexpected vector counts from ' + source + ':');
+    console.error('  v0.1: got ' + v01.length + ', want ' + V01_COUNT);
+    console.error('  v0.2: got ' + v02.length + ', want ' + V02_COUNT);
+    console.error('Refusing to run a partial suite.');
+    process.exit(1);
+  }
+  return [...v01, ...v02];
 }
 
 const VECTORS = loadVectors();
