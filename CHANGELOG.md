@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.9] - 2026-07-17
+
+### Fixed
+- `==` comparator now uses the spec 5.1 tolerance (default 1e-9, overridable via metric_args.tolerance) instead of exact float equality, matching the Python reference and impl/js. Fixes the 0.1 + 0.2 == 0.3 footgun. Byte-identical with impl/js in the spec repo (CI drift-diff).
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
