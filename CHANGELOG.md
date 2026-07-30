@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.10] - 2026-07-31
+
+### Changed
+- `validateManifest` now enforces the full published JSON Schema, in lockstep
+  with the Python reference and impl/js as of falsify v0.3.12: UUIDv7
+  `claim_id`, RFC 3339 `created_at`, metric length, integer/bigint-or-null
+  `seed`, sub-object and top-level `additionalProperties: false`,
+  `prior_hash` and `notes` constraints. **Breaking** for manifests that
+  relied on the previous looser validation (most commonly non-UUIDv7 claim
+  identifiers). Prompted by the independent Andes interoperability
+  assessment (2026-07-28, finding 1).
+
 ## [0.1.9] - 2026-07-17
 
 ### Fixed
