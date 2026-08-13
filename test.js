@@ -151,3 +151,48 @@ test(`all ${VECTORS.length} conformance vectors hash byte-equivalently (13 v0.1 
   }
   assert.equal(passed, VECTORS.length - HASH_SKIP.size);
 });
+
+// ── prml-linkage/0 (experimental) ─────────────────────────────────────────
+
+const linkage = require('./linkage.js');
+
+const LINK_MANIFEST_HASH = 'a'.repeat(64);
+const LINK_DATASET_HASH = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+const LINK_DIGEST = 'b'.repeat(64);
+
+function linkStart() {
+  return linkage.buildStart(LINK_MANIFEST_HASH, 'run-0001', 'node-test', LINK_DATASET_HASH, {
+    startedAt: '2026-08-13T10:00:00Z',
+  });
+}
+
+test('linkage: roundtrip start→finalize→verify passes at tier L2', () => {
+  const start = linkStart();
+  const final = linkage.finalize(start, 0.9, LINK_DIGEST, 0, { finishedAt: '2026-08-13T10:05:00Z' });
+  const report = linkage.verify(final, { startRecord: start });
+  assert.equal(report.ok, true, JSON.stringify(report.failures));
+  assert.equal(report.tier, 'L2');
+});
+
+test('linkage: integer observed canonicalizes with .0 suffix (spec float rule)', () => {
+  const start = linkStart();
+  const final = linkage.finalize(start, 1, LINK_DIGEST, 0, { finishedAt: '2026-08-13T10:05:00Z' });
+  assert.match(canonicalize(final), /observed: 1\.0\n/);
+});
+
+test('linkage: tampered start record breaks the chain', () => {
+  const start = linkStart();
+  const final = linkage.finalize(start, 0.9, LINK_DIGEST, 0, { finishedAt: '2026-08-13T10:05:00Z' });
+  const tampered = { ...start, run: { ...start.run, started_at: '2026-08-13T09:00:00Z' } };
+  const report = linkage.verify(final, { startRecord: tampered });
+  assert.equal(report.ok, false);
+  assert.equal(report.failures.every((f) => f.check === 'chain-broken'), true);
+});
+
+test('linkage: chronology violation is caught', () => {
+  const start = linkStart();
+  const final = linkage.finalize(start, 0.9, LINK_DIGEST, 0, { finishedAt: '2026-08-13T09:00:00Z' });
+  const report = linkage.verify(final);
+  assert.equal(report.ok, false);
+  assert.equal(report.failures[0].check, 'chronology');
+});

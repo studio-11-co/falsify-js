@@ -146,3 +146,18 @@ Contact: hello@falsify.dev · [falsify.dev](https://falsify.dev)
 See [`CONTRIBUTING.md`](./CONTRIBUTING.md) and the [`good first issue`](https://github.com/studio-11-co/falsify-js/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) label for scoped work.
 
 **Cite the spec:** Öztürk, C. (2026). *PRML v0.1*. Zenodo. [https://doi.org/10.5281/zenodo.20177839](https://doi.org/10.5281/zenodo.20177839)
+
+## Experimental: execution linkage (`prml-linkage/0` draft)
+
+```js
+const { linkage } = require('falsify-js');
+const start = linkage.buildStart(manifestHash, 'run-42', 'ci/linux', datasetHash);
+// ... run the eval ...
+const final = linkage.finalize(start, observed, resultDigest, exitCode);
+const report = linkage.verify(final, { startRecord: start }); // { ok, tier, failures, skipped }
+```
+
+Reference implementation of the `prml-linkage/0` draft (start/final record
+chaining that evidences lock → run → result order; tiers L1/L2/L3). Draft
+API — may change until draft 0 freezes. Spec:
+[`spec/linkage/prml-linkage-0.md`](https://github.com/studio-11-co/falsify/blob/main/spec/linkage/prml-linkage-0.md).

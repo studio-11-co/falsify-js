@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.11] - 2026-08-13
+
+### Added
+- **Experimental `linkage` module** — reference implementation of the
+  `prml-linkage/0` draft (execution linkage: start/final record chaining,
+  tiers L1/L2/L3, offline verification). `require('falsify-js').linkage`
+  or `import { linkage } from 'falsify-js'`; also exported as the
+  `falsify-js/linkage` subpath. Draft API — may change until draft 0
+  freezes. Spec: studio-11-co/falsify `spec/linkage/prml-linkage-0.md`.
+- Canonicalizer renders `prml-linkage/0` records with the spec's observed
+  float rule (integer-valued `observed` renders as `x.0`), byte-parity
+  with the Python reference asserted upstream by cross-language tests.
+
 ## [0.1.10] - 2026-07-31
 
 ### Changed

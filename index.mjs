@@ -16,3 +16,5 @@ export const EXIT_FAIL = pkg.EXIT_FAIL;
 export const EXIT_GUARD = pkg.EXIT_GUARD;
 
 export default pkg;
+// Experimental: prml-linkage/0 draft. API may change until draft 0 freezes.
+export const linkage = pkg.linkage;
