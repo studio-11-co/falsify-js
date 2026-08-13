@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.12] - 2026-08-13
+
+### Fixed
+- `linkage` default timestamps now keep millisecond precision, so a
+  sub-second run still satisfies the spec's strict
+  `started_at < finished_at` chronology check (previously both defaulted
+  to whole seconds and could collide). Explicitly passed timestamps are
+  unaffected.
+
 ## [0.1.11] - 2026-08-13
 
 ### Added
