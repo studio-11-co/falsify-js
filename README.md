@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRML v0.1](https://img.shields.io/badge/PRML-v0.1-39D98A.svg)](https://spec.falsify.dev/v0.1)
 
-PRML is an open CC BY 4.0 specification for committing ML evaluation claims to a SHA-256 hash before the experiment runs. `falsify-js` produces canonical bytes per the spec's §4 rules, byte-equivalent to the Python reference across **21 conformance vectors** (13 v0.1 stable + 8 v0.2 RFC).
+PRML is an open specification (Community Specification License 1.0) for committing ML evaluation claims to a SHA-256 hash before the experiment runs. `falsify-js` produces canonical bytes per the spec's §4 rules, byte-equivalent to the Python reference across **21 conformance vectors** (13 v0.1 stable + 8 v0.2 RFC).
 
 Zero runtime dependencies. Single file, ~440 LOC. Runs on Node.js >= 18, as a CLI and as a library. Browser use is not packaged: the code relies on Node's `fs` and `crypto` modules, and the [registry](https://registry.falsify.dev) serves its own browser verifier.
 
@@ -115,7 +115,7 @@ Subcategory-by-subcategory maps from major AI governance frameworks to PRML fiel
 
 ## Spec & licensing
 
-- Spec: [spec.falsify.dev/v0.1](https://spec.falsify.dev/v0.1) (CC BY 4.0)
+- Spec: [spec.falsify.dev/v0.1](https://spec.falsify.dev/v0.1) (Community Specification License 1.0)
 - v0.2 RFC (open through 2026-05-22): [spec.falsify.dev/v0.2-rfc](https://spec.falsify.dev/v0.2-rfc)
 - JSON Schema: [spec.falsify.dev/schema/](https://spec.falsify.dev/schema/)
 - Patent non-assertion grant: [appendix of the spec](https://spec.falsify.dev/v0.1#appendix-patent-grant)
