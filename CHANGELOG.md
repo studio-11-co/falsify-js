@@ -1,6 +1,8 @@
 # Changelog
 
-## [Unreleased] — 0.2.0 önerilir (kanonik çıktı 18 kenar girdide değişti), npm'e HENÜZ yayımlanmadı
+## [0.2.0] - 2026-09-13
+
+Canonical output changes for some inputs (see Fixed), hence a minor bump, not a patch.
 
 ### Fixed
 - **Canonical output corrected on 18 edge inputs.** The plain-scalar predicate is
