@@ -13,9 +13,12 @@
   one of those strings hashes differently than before** — the old hash was the
   one that disagreed with the reference. Because canonical output changes for some
   inputs, the next publish should be **0.2.0**, not 0.1.14.
-- Known, unchanged: a v0.2 `threshold` spelled `1300.0` still renders `1300`
-  (`JSON.parse` and js-yaml cannot distinguish it from `1300`); the spec has not
-  yet decided which is canonical.
+- v0.2 `threshold` now renders **by value** per the RFC post-freeze clarification
+  (2026-09-13): integral and |v| < 2^53 → integer digits (`1300.0`→`1300`, what this
+  package already did), otherwise the C4 float — so `9007199254740992` now renders
+  `9007199254740992.0` and `10000000000000000` renders `1.0e+16` (previously plain
+  digits). BigInt thresholds are handled. The spec decided in favour of the
+  behaviour JavaScript could implement; the other implementations changed.
 - **`js-yaml` is now a declared dependency.** Until 0.1.13 it was referenced only
   from inside a `require()` and appeared in no dependency field at all, so a clean
   `npm install falsify-js` produced a verifier that could not read the format's
