@@ -1,5 +1,28 @@
 # Changelog
 
+## [Unreleased] — 0.1.14 hazır, npm'e HENÜZ yayımlanmadı
+
+### Fixed
+- **`js-yaml` is now a declared dependency.** Until 0.1.13 it was referenced only
+  from inside a `require()` and appeared in no dependency field at all, so a clean
+  `npm install falsify-js` produced a verifier that could not read the format's
+  canonical media type (`application/vnd.prml+yaml`); `hash` on any `.prml.yaml`
+  failed with "YAML loading requires js-yaml". Measured and fixed 13 September 2026.
+  The `require()` stays inside a try block so a JSON-only caller in a locked-down
+  environment still works if the module is unavailable.
+
+### Changed
+- Error text for a missing YAML parser now says the module is a declared dependency
+  and to reinstall, rather than implying the user forgot an optional extra.
+
+## [0.1.13] - 2026-08-23
+
+### Changed
+- Republished in step with the `falsify` 0.3.13 defect-fix release (reject suite
+  14 → 20). No change to canonical bytes or to any digest of a valid manifest.
+  *(Entry written retroactively on 2026-09-13: 0.1.13 shipped to npm without a
+  CHANGELOG entry or a git tag. Both gaps are closed here.)*
+
 ## [0.1.12] - 2026-08-13
 
 ### Fixed

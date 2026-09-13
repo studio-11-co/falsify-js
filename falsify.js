@@ -441,12 +441,15 @@ function loadManifest(filePath) {
     assertNoDuplicateNames(raw);
     return assertNoProtoKeys(JSON.parse(raw));
   }
-  // Otherwise use js-yaml if available (optional dependency).
+  // Otherwise use js-yaml. Declared dependency since 0.1.14: the canonical media
+  // type is application/vnd.prml+yaml, so a verifier that cannot read YAML cannot
+  // read the format. It stays behind require() so a JSON-only caller in a locked-down
+  // environment still works if the module is absent.
   let yaml;
   try {
     yaml = require('js-yaml');
   } catch (e) {
-    throw new Error('YAML loading requires js-yaml: npm install js-yaml. Or pass a .json file.');
+    throw new Error('YAML loading requires js-yaml (a declared dependency of falsify-js; reinstall the package, or run: npm install js-yaml). Or pass a .json file.');
   }
   // CORE_SCHEMA: no custom/JS type tags (e.g. !!js/function) can be
   // instantiated from untrusted manifest content.
