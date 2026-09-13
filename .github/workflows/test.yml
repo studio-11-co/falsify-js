@@ -34,11 +34,18 @@ jobs:
           curl -fsSL "$BASE/v0.2/test-vectors.json"     -o vectors/v0.2/test-vectors.json
           curl -fsSL "$BASE/reject/reject-vectors.json" -o vectors/reject/reject-vectors.json
           curl -fsSL "$BASE/reject/check_reject.py"     -o vectors/reject/check_reject.py
+          mkdir -p vectors/edge
+          curl -fsSL "$BASE/edge/edge-vectors.json"     -o vectors/edge/edge-vectors.json
 
       - name: Run tests (both suites; test.js asserts 13 + 8 vector counts)
         run: node test.js
         env:
           PRML_VECTORS_DIR: ${{ github.workspace }}/vectors
+
+
+      - name: Edge suite (92 vectors, spec §3.6 grammar — the inputs 0.2.0 changed)
+
+        run: node falsify.js test-vectors vectors/edge/edge-vectors.json
 
       # This package reads YAML through js-yaml, an optional dependency. Without
       # it the reject suite scored a false pass on every YAML vector: each one
