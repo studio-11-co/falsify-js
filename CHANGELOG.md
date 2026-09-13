@@ -1,8 +1,21 @@
 # Changelog
 
-## [Unreleased] — 0.1.14 hazır, npm'e HENÜZ yayımlanmadı
+## [Unreleased] — 0.2.0 önerilir (kanonik çıktı 18 kenar girdide değişti), npm'e HENÜZ yayımlanmadı
 
 ### Fixed
+- **Canonical output corrected on 18 edge inputs.** The plain-scalar predicate is
+  now a transcription of PRML spec §3.6 / `spec/grammar/README.md` §C5 (P1–P6 and
+  the YAML 1.1 resolver patterns verbatim) instead of a hand-rolled approximation
+  of PyYAML. Previously over-quoted: `?x` `:x` `y` `n` `Y` `N` `1e5` `1E5` `12e3`
+  `1e-5` `0o17`; previously under-quoted: `-` `<<` `=` `1_000` `1:30`
+  `190:20:30` `0b101`. No conformance vector was affected; the new 82-vector edge
+  suite (`spec/test-vectors/edge/` in the spec repo) is. **A manifest containing
+  one of those strings hashes differently than before** — the old hash was the
+  one that disagreed with the reference. Because canonical output changes for some
+  inputs, the next publish should be **0.2.0**, not 0.1.14.
+- Known, unchanged: a v0.2 `threshold` spelled `1300.0` still renders `1300`
+  (`JSON.parse` and js-yaml cannot distinguish it from `1300`); the spec has not
+  yet decided which is canonical.
 - **`js-yaml` is now a declared dependency.** Until 0.1.13 it was referenced only
   from inside a `require()` and appeared in no dependency field at all, so a clean
   `npm install falsify-js` produced a verifier that could not read the format's
