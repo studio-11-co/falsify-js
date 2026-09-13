@@ -1,5 +1,7 @@
 # falsify-js
 
+
+**Compatibility:** governed by the PRML [compatibility and deprecation policy](https://spec.falsify.dev/COMPATIBILITY.md) (adopted 2026-09-13).
 > JavaScript reference implementation of the [PRML (Pre-Registered ML Manifest) v0.1](https://spec.falsify.dev/v0.1) specification.
 
 [![npm](https://img.shields.io/npm/v/falsify-js.svg)](https://www.npmjs.com/package/falsify-js)
