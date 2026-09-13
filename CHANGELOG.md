@@ -10,7 +10,7 @@ Canonical output changes for some inputs (see Fixed), hence a minor bump, not a 
   the YAML 1.1 resolver patterns verbatim) instead of a hand-rolled approximation
   of PyYAML. Previously over-quoted: `?x` `:x` `y` `n` `Y` `N` `1e5` `1E5` `12e3`
   `1e-5` `0o17`; previously under-quoted: `-` `<<` `=` `1_000` `1:30`
-  `190:20:30` `0b101`. No conformance vector was affected; the new 82-vector edge
+  `190:20:30` `0b101`. No conformance vector was affected; the new 92-vector edge
   suite (`spec/test-vectors/edge/` in the spec repo) is. **A manifest containing
   one of those strings hashes differently than before** — the old hash was the
   one that disagreed with the reference. Because canonical output changes for some
